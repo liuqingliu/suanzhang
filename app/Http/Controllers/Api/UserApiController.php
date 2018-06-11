@@ -25,6 +25,7 @@ class UserApiController extends ApiController
 		} else {
 			print($errCode . "\n");
 		}
+		var_dump(env("APPID"),$request->sessionKey,$request->encryptedData,$request->iv,$data);exit;
 		return UserCollection::collection(User::paginate(Input::get('limit') ?: 20));
 
 	}
