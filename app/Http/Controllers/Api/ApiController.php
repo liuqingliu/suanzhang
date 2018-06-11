@@ -5,16 +5,16 @@
 	 * Date: 2018/6/11
 	 * Time: 16:40
 	 */
-	namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api;
 
-	use App\Api\Helpers\Api\ApiResponse;
-	use App\Http\Controllers\Controller;
+use App\Api\Helpers\Api\ApiResponse;
+use App\Http\Controllers\Controller;
 
-	class ApiController extends Controller
-	{
+class ApiController extends Controller
+{
 
-		use ApiResponse;
+	use ApiResponse;
 
-		// 其他通用的Api帮助函数
+	// 其他通用的Api帮助函数
 
-	}
+}
