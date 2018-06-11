@@ -7,6 +7,7 @@
 	 */
 namespace App\Http\Controllers\Api;
 
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Http\Resources\User as UserCollection;
@@ -16,8 +17,9 @@ use WXBizDataCrypt;
 class UserApiController extends ApiController
 {
 	public function getUserinfo(Request $request){
-		var_dump($request->userinfo);exit;
-		$pc = new WXBizDataCrypt(env("APPID"), $request->sessionKey);
+		$sessionCode = $this->getSessionKeys($request->code);
+		var_dump($sessionCode);exit;
+		$pc = new WXBizDataCrypt(env("APPID"), $sessionCode);
 		$errCode = $pc->decryptData($request->encryptedData, $request->iv, $data );
 
 		if ($errCode == 0) {
@@ -27,6 +29,14 @@ class UserApiController extends ApiController
 		}
 		var_dump(env("APPID"),$request->sessionKey,$request->encryptedData,$request->iv,$data);exit;
 		return UserCollection::collection(User::paginate(Input::get('limit') ?: 20));
+	}
 
+	private function getSessionKeys($code){
+		$client = new Client();
+# 获取一个外部 API 接口：
+		$response = $client->get('https://api.weixin.qq.com/sns/jscode2session?appid='.env("APPID")
+			.'&secret='.env("APPSERCRET").'&js_code='.$code.'&grant_type=authorization_code');
+# echo 结果
+		return $response->getBody();
 	}
 }
