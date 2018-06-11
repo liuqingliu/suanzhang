@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Input;
 class UserApiController extends ApiController
 {
 	public function getUserinfo(Request $request){
-		var_dump($request);exit;
+		var_dump($request->name);exit;
 		return UserCollection::collection(User::paginate(Input::get('limit') ?: 20));
 
 	}
