@@ -34,11 +34,15 @@ class UserApiController extends ApiController
 	private function getSessionKeys($code){
 		$client = new Client();
 # 获取一个外部 API 接口：
+		$appId = env("APPID");
+		$secret = env("APPSERCRET");
 		$res = $client->request('GET', 'https://api.weixin.qq.com/sns/jscode2session', [
-			'appid' => env("APPID"),
-			'secret' => env("APPSERCRET"),
-			'js_code' => $code,
-			'grant_type' => 'authorization_code'
+			'query' => [
+				'appid' => "{$appId}",
+				'secret' => "{$secret}",
+				'js_code' => "{$code}",
+				'grant_type' => 'authorization_code'
+			]
 		]);
 //		$response = $client->get('https://api.weixin.qq.com/sns/jscode2session?appid='.env("APPID")
 //			.'&secret='.env("APPSERCRET").'&js_code='.$code.'&grant_type=authorization_code');
