@@ -6,14 +6,16 @@
 	 * Time: 18:19
 	 */
 namespace App\Http\Controllers\Api;
+
+use Illuminate\Http\Request;
 use App\Models\User;
 use App\Http\Resources\User as UserCollection;
 use Illuminate\Support\Facades\Input;
 
 class UserApiController extends ApiController
 {
-	public function getUserinfo(){
-
+	public function getUserinfo(Request $request){
+		var_dump($request);exit;
 		return UserCollection::collection(User::paginate(Input::get('limit') ?: 20));
 
 	}
