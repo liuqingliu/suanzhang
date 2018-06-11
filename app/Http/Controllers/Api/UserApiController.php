@@ -16,7 +16,7 @@ use WXBizDataCrypt;
 class UserApiController extends ApiController
 {
 	public function getUserinfo(Request $request){
-//		include_once "../../../utils/wx/encryptedData/wxBizDataCrypt.php";
+		include_once "../../../utils/wx/encryptedData/wxBizDataCrypt.php";
 		$pc = new WXBizDataCrypt(env("APPID"), $request->sessionKey);
 		$errCode = $pc->decryptData($request->encryptedData, $request->iv, $data );
 
