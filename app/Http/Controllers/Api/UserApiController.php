@@ -17,25 +17,25 @@ use WXBizDataCrypt;
 class UserApiController extends ApiController
 {
 	public function getUserinfo(Request $request){
-		$sessionCode = $this->getSessionKeys($request->code);
-		var_dump($sessionCode);exit;
-		$pc = new WXBizDataCrypt(env("APPID"), $sessionCode);
-		$errCode = $pc->decryptData($request->encryptedData, $request->iv, $data );
+		$loginInfo = $this->getLoginInfo($request->code);
+		$pc = new WXBizDataCrypt(env("APPID"), $loginInfo['session_key']);
+		$userInfo = $request->userinfo;
+		$errCode = $pc->decryptData($userInfo['encryptedData'], $userInfo['iv'], $data );
 
 		if ($errCode == 0) {
 			print($data . "\n");
 		} else {
 			print($errCode . "\n");
 		}
-		var_dump(env("APPID"),$request->sessionKey,$request->encryptedData,$request->iv,$data);exit;
+		var_dump($errCode,$data);exit;
 		return UserCollection::collection(User::paginate(Input::get('limit') ?: 20));
 	}
 
-	private function getSessionKeys($code){
+	private function getLoginInfo($code){
 		$client = new Client();
 # 获取一个外部 API 接口：
 		$appId = env("APPID");
-		$secret = env("APPSERCRET");
+		$secret = env("APPSECRET");
 		$res = $client->request('GET', 'https://api.weixin.qq.com/sns/jscode2session', [
 			'query' => [
 				'appid' => "{$appId}",
@@ -47,6 +47,6 @@ class UserApiController extends ApiController
 //		$response = $client->get('https://api.weixin.qq.com/sns/jscode2session?appid='.env("APPID")
 //			.'&secret='.env("APPSERCRET").'&js_code='.$code.'&grant_type=authorization_code');
 # echo 结果
-		return $res->getBody();
+		return $res->getBody()->getContents();
 	}
 }
