@@ -17,4 +17,4 @@ Route::get('/', function () {
 
 
 
-Route::get('/api/getuserinfo', 'ApiController@getUserinfo');
+Route::get('/userapi/getuserinfo', 'UserApiController@getUserinfo');

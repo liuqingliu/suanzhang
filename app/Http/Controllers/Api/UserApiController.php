@@ -10,9 +10,9 @@
 	use App\Http\Resources\User as UserCollection;
 	use Illuminate\Support\Facades\Input;
 
-	class IndexController extends ApiController
+	class UserApiController extends ApiController
 	{
-		public function index(){
+		public function getUserinfo(){
 
 			return UserCollection::collection(User::paginate(Input::get('limit') ?: 20));
 
