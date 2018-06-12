@@ -18,7 +18,7 @@ class UserApiController extends ApiController
 {
 	public function getUserinfo(Request $request){
 		$loginInfo = $this->getLoginInfo($request->code);
-		$pc = new WXBizDataCrypt(env("APPID"), $loginInfo['session_key']);
+		$pc = new WXBizDataCrypt(env("APPID"), $loginInfo->session_key);
 		$userInfo = $request->userinfo;
 		$errCode = $pc->decryptData($userInfo['encryptedData'], $userInfo['iv'], $data );
 
@@ -44,9 +44,6 @@ class UserApiController extends ApiController
 				'grant_type' => 'authorization_code'
 			]
 		]);
-//		$response = $client->get('https://api.weixin.qq.com/sns/jscode2session?appid='.env("APPID")
-//			.'&secret='.env("APPSERCRET").'&js_code='.$code.'&grant_type=authorization_code');
-# echo 结果
-		return $res->getBody()->getContents();
+		return json_decode($res->getBody()->getContents());
 	}
 }
