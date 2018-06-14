@@ -29,6 +29,7 @@ class UserApiController extends ApiController
 		$user->country = $userInfoDetail->country;
 		$user->avatarUrl = $userInfoDetail->avatarUrl;
 		$user->openid = $loginInfo->openid;
+		$user->ip = $request->getClientIp();
 		$user->save();
 //		$errCode = $pc->decryptData($userInfo->encryptedData, $userInfo->iv, $data );
 //
@@ -38,7 +39,7 @@ class UserApiController extends ApiController
 //			print($errCode . "\n");
 //		}
 //		var_dump($errCode,$data);exit;
-		return json_encode($loginInfo);
+		\Tools::outPut(\ErrorMsg::$succ);
 	}
 
 	private function getLoginInfo($code){
