@@ -41,6 +41,7 @@ class UserApiController extends ApiController
 			"in_total_price" => Game::where("openid", $loginInfo->openid)->sum("in_price"),
 			"out_total_price" => Game::where("openid", $loginInfo->openid)->sum("out_price"),
 		];
+		$res["total_price"] =  $res["in_total_price"] - $res["out_total_price"];
 		$succOut = ErrorMsg::$succ;
 		$succOut["data"] = $res;
 		Tools::outPut($succOut);
