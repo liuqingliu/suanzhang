@@ -10,6 +10,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Common\ErrorMsg;
 use App\Http\Common\Tools;
+use App\Models\Game;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -20,19 +21,25 @@ class UserApiController extends ApiController
 {
 	public function getUserinfo(Request $request){
 		$loginInfo = $this->getLoginInfo($request->code);
-//		$pc = new WXBizDataCrypt(env("APPID"), $loginInfo->session_key);
 		$userInfo = json_decode($request->userinfo);
 		$userInfoDetail = $userInfo->userInfo;
-		User::updateOrCreate(['openid' => $loginInfo->openid], [
-			'nickName' => $userInfoDetail->nickName,
-			'gender' => $userInfoDetail->gender,
-			'city' => $userInfoDetail->city,
-			'province' => $userInfoDetail->province,
-			'country' => $userInfoDetail->country,
-			'avatarUrl' => $userInfoDetail->avatarUrl,
-			'ip' => $request->getClientIp(),
-		]);
-		Tools::outPut(ErrorMsg::$succ);
+		//获取game信息
+		$gameInfo = Game::where("openid", $loginInfo->openid)->orderBy('id','desc')->first();
+		if(empty($gameInfo)) {
+			//todo:这里要改!
+			User::updateOrCreate(['openid' => $loginInfo->openid], [
+				'nickName' => $userInfoDetail->nickName,
+				'gender' => $userInfoDetail->gender,
+				'city' => $userInfoDetail->city,
+				'province' => $userInfoDetail->province,
+				'country' => $userInfoDetail->country,
+				'avatarUrl' => $userInfoDetail->avatarUrl,
+				'ip' => $request->getClientIp(),
+			]);
+		}
+		$succOut = ErrorMsg::$succ;
+		$succOut["data"] = $gameInfo;
+		Tools::outPut($succOut);
 	}
 
 	private function getLoginInfo($code){
