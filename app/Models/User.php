@@ -14,6 +14,9 @@ class User extends Authenticatable
      *
      * @var array
      */
+
+	protected $table = 'games';
+
 	protected $fillable = [
 		'nickName', 'email', 'password', 'open_id', 'gender', 'country', 'province', 'city', 'ip','openid'
 	];
@@ -24,6 +27,6 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'password', 'remember_token', 'created_at', 'updated_at',
     ];
 }
