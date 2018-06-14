@@ -13,9 +13,9 @@ use App\Http\Common\Tools;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use App\Models\User;
-use App\Http\Resources\User as UserCollection;
+//use App\Http\Resources\User as UserCollection;
 use Illuminate\Support\Facades\Input;
-use WXBizDataCrypt;
+//use WXBizDataCrypt;
 
 class UserApiController extends ApiController
 {
