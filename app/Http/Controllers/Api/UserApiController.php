@@ -20,15 +20,15 @@ class UserApiController extends ApiController
 		$loginInfo = $this->getLoginInfo($request->code);
 //		$pc = new WXBizDataCrypt(env("APPID"), $loginInfo->session_key);
 		$userInfo = json_decode($request->userinfo);
-		$userInfoDetail = $userInfo["userInfo"];
+		$userInfoDetail = $userInfo->userInfo;
 		$user = new User();
-		$user->nickName = $userInfoDetail["nickName"];
-		$user->gender = $userInfoDetail["gender"];
-		$user->city = $userInfoDetail["city"];
-		$user->province = $userInfoDetail["province"];
-		$user->country = $userInfoDetail["country"];
-		$user->avatarUrl = $userInfoDetail["avatarUrl"];
-		$user->openid = $loginInfo["openid"];
+		$user->nickName = $userInfoDetail->nickName;
+		$user->gender = $userInfoDetail->gender;
+		$user->city = $userInfoDetail->city;
+		$user->province = $userInfoDetail->province;
+		$user->country = $userInfoDetail->country;
+		$user->avatarUrl = $userInfoDetail->avatarUrl;
+		$user->openid = $loginInfo->openid;
 		$user->save();
 //		$errCode = $pc->decryptData($userInfo->encryptedData, $userInfo->iv, $data );
 //
