@@ -18,17 +18,27 @@ class UserApiController extends ApiController
 {
 	public function getUserinfo(Request $request){
 		$loginInfo = $this->getLoginInfo($request->code);
-		$pc = new WXBizDataCrypt(env("APPID"), $loginInfo->session_key);
-		$userInfo = $request->userinfo;
-		$errCode = $pc->decryptData($userInfo['encryptedData'], $userInfo['iv'], $data );
-
-		if ($errCode == 0) {
-			print($data . "\n");
-		} else {
-			print($errCode . "\n");
-		}
-		var_dump($errCode,$data);exit;
-		return UserCollection::collection(User::paginate(Input::get('limit') ?: 20));
+//		$pc = new WXBizDataCrypt(env("APPID"), $loginInfo->session_key);
+		$userInfo = json_decode($request->userinfo);
+		$userInfoDetail = $userInfo["userInfo"];
+		$user = new User();
+		$user->nickName = $userInfoDetail["nickName"];
+		$user->gender = $userInfoDetail["gender"];
+		$user->city = $userInfoDetail["city"];
+		$user->province = $userInfoDetail["province"];
+		$user->country = $userInfoDetail["country"];
+		$user->avatarUrl = $userInfoDetail["avatarUrl"];
+		$user->openid = $loginInfo["openid"];
+		$user->save();
+//		$errCode = $pc->decryptData($userInfo->encryptedData, $userInfo->iv, $data );
+//
+//		if ($errCode == 0) {
+//			print($data . "\n");
+//		} else {
+//			print($errCode . "\n");
+//		}
+//		var_dump($errCode,$data);exit;
+		return json_encode($loginInfo);
 	}
 
 	private function getLoginInfo($code){
