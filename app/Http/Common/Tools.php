@@ -15,7 +15,8 @@ class Tools
 		if($callback) {
 
 		}else{
-			return json_encode($outData);
+			echo json_encode($outData);
+			exit;
 		}
 	}
 }
