@@ -7,6 +7,9 @@
 	 */
 namespace App\Http\Controllers\Api;
 
+
+use App\Http\Common\ErrorMsg;
+use App\Http\Common\Tools;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -39,7 +42,7 @@ class UserApiController extends ApiController
 //			print($errCode . "\n");
 //		}
 //		var_dump($errCode,$data);exit;
-		\Tools::outPut(\ErrorMsg::$succ);
+		Tools::outPut(ErrorMsg::$succ);
 	}
 
 	private function getLoginInfo($code){
