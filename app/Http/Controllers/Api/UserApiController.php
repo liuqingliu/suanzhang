@@ -37,8 +37,12 @@ class UserApiController extends ApiController
 				'ip' => $request->getClientIp(),
 			]);
 		}
+		$res = [
+			"in_total_price" => Game::where("openid", $loginInfo->openid)->sum("in_price"),
+			"out_total_price" => Game::where("openid", $loginInfo->openid)->sum("out_price"),
+		];
 		$succOut = ErrorMsg::$succ;
-		$succOut["data"] = $gameInfo;
+		$succOut["data"] = $res;
 		Tools::outPut($succOut);
 	}
 
