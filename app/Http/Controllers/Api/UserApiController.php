@@ -23,16 +23,15 @@ class UserApiController extends ApiController
 //		$pc = new WXBizDataCrypt(env("APPID"), $loginInfo->session_key);
 		$userInfo = json_decode($request->userinfo);
 		$userInfoDetail = $userInfo->userInfo;
-		$user = new User();
-		$user->nickName = $userInfoDetail->nickName;
-		$user->gender = $userInfoDetail->gender;
-		$user->city = $userInfoDetail->city;
-		$user->province = $userInfoDetail->province;
-		$user->country = $userInfoDetail->country;
-		$user->avatarUrl = $userInfoDetail->avatarUrl;
-		$user->openid = $loginInfo->openid;
-		$user->ip = $request->getClientIp();
-		$user->save();
+		User::updateOrCreate(['openid' => $loginInfo->openid], [
+			'nickName' => $userInfoDetail->nickName,
+			'gender' => $userInfoDetail->gender,
+			'city' => $userInfoDetail->city,
+			'province' => $userInfoDetail->province,
+			'country' => $userInfoDetail->country,
+			'avatarUrl' => $userInfoDetail->avatarUrl,
+			'ip' => $request->getClientIp(),
+		]);
 		Tools::outPut(ErrorMsg::$succ);
 	}
 
