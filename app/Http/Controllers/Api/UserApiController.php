@@ -34,14 +34,6 @@ class UserApiController extends ApiController
 		$user->openid = $loginInfo->openid;
 		$user->ip = $request->getClientIp();
 		$user->save();
-//		$errCode = $pc->decryptData($userInfo->encryptedData, $userInfo->iv, $data );
-//
-//		if ($errCode == 0) {
-//			print($data . "\n");
-//		} else {
-//			print($errCode . "\n");
-//		}
-//		var_dump($errCode,$data);exit;
 		Tools::outPut(ErrorMsg::$succ);
 	}
 
