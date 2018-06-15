@@ -14,7 +14,7 @@ use App\Models\Game;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
-
+use Illuminate\Support\Facades\DB;
 
 class GameApiController extends ApiController
 {
@@ -35,6 +35,11 @@ class GameApiController extends ApiController
 			"game_status", "in_price", "out_price", "game_num"
 		];
 		$res = Tools::getMyArr($res, $keys, $gameInfo);
+		//获取当前对局中，对厉害的，最菜的
+		if($gameInfo["game_status"]>=2){
+			$res["winner"] = Game::select(DB::raw("max(in_price-out_price) as hismoney, openid"))->where('game_num', $gameInfo->game_num)->first();
+			$res["loser"] = Game::select(DB::raw("max(in_price-out_price) as hismoney, openid"))->where('game_num', $gameInfo->game_num)->first();
+		}
 		$succOut = ErrorMsg::$succ;
 		$succOut["data"] = $res;
 		Tools::outPut($succOut);
