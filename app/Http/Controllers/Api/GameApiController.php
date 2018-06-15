@@ -22,7 +22,7 @@ class GameApiController extends ApiController
 		$this->validate($request, [
 			'openid' => 'required|max:64',
 		]);
-		$openId = $request->openId;
+		$openId = $request->openid;
 		//获取game信息
 		$gameInfo = Game::where("openid", $openId)->orderBy('id','desc')->first();
 		Tools::ensureNotEmpty($gameInfo, ErrorMsg::$gameEmpty);
