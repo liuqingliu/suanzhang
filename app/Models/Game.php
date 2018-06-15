@@ -18,8 +18,8 @@ class Game extends Model
 	protected $table = 'games';
 
 	protected $fillable = [
-		'openid', 'room_num', 'game_num', 'in_price', 'out_price', 'hu_status', 'hu_people_num', 'hu_times',
-		'yu_status', 'yu_people_num', 'yu_times', 'game_status'
+		'openid', 'room_num', 'game_num', 'in_price', 'out_price', 'hu_status', 'hu_people_list', 'hu_times',
+		'yu_status', 'yu_people_list', 'yu_times', 'game_status'
 	];
 
 	/**
