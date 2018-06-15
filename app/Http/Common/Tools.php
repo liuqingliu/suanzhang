@@ -19,4 +19,40 @@ class Tools
 		}
 		exit;
 	}
+
+	public static function ensureNotEmpty($v, $outData)
+	{
+		if(empty($v)) {
+			self::outPut($outData);
+		}
+	}
+
+	public static function ensureEmpty($v, $outData)
+	{
+		if(!empty($v)) {
+			self::outPut($outData);
+		}
+	}
+
+	public static function ensureNotFalse($v, $outData)
+	{
+		if($v===false) {
+			self::outPut($outData);
+		}
+	}
+
+	public static function ensureFalse($v, $outData)
+	{
+		if($v!==false) {
+			self::outPut($outData);
+		}
+	}
+
+	public static function getMyArr($res = [], $keys, $data)
+	{
+		foreach ($keys as $v) {
+			$res["$v"] = isset($data["$v"]) ? $data["$v"] : "";
+		}
+		return $res;
+	}
 }

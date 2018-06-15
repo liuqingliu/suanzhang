@@ -23,10 +23,9 @@ class UserApiController extends ApiController
 		$loginInfo = $this->getLoginInfo($request->code);
 		$userInfo = json_decode($request->userinfo);
 		$userInfoDetail = $userInfo->userInfo;
-		//获取game信息
-		$gameInfo = Game::where("openid", $loginInfo->openid)->orderBy('id','desc')->first();
-		if(empty($gameInfo)) {
-			//todo:这里要改!
+		//获取UserInfo
+		$myUserInfo = User::where("openid", $loginInfo->openid)->first();//收集用户信息
+		if(empty($myUserInfo)) {
 			User::updateOrCreate(['openid' => $loginInfo->openid], [
 				'nickName' => $userInfoDetail->nickName,
 				'gender' => $userInfoDetail->gender,
@@ -38,12 +37,10 @@ class UserApiController extends ApiController
 			]);
 		}
 		$res = [
-			"in_total_price" => Game::where("openid", $loginInfo->openid)->sum("in_price"),
-			"out_total_price" => Game::where("openid", $loginInfo->openid)->sum("out_price"),
+			"openid" =>  $loginInfo->openid
 		];
-		$res["total_price"] =  $res["in_total_price"] - $res["out_total_price"];
 		$succOut = ErrorMsg::$succ;
-		$succOut["data"] = $res;
+		$succOut["res"] = $res;
 		Tools::outPut($succOut);
 	}
 
