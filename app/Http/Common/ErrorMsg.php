@@ -19,4 +19,5 @@ class ErrorMsg{
 	//game 200-2020
 	public static $gameEmpty =  ["errno" => 200,"errmsg" => "游戏信息为空"];
 	public static $gameCalculateErr =  ["errno" => 201,"errmsg" => "游戏计算出错"];
+	public static $gameReadyCalcuErr =  ["errno" => 202,"errmsg" => "游戏计算准备失败"];
 }

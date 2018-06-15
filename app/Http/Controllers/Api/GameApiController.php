@@ -53,15 +53,9 @@ class GameApiController extends ApiController
 	{
 		$validator = Validator::make($request->all(), [
 			'openid' => 'required|max:64',
-			'game_num' => 'required|int',
-			'hu_status' => 'required|int',
-			'hu_people_list' => 'required',
-			'hu_times' => 'required|int',
-			'yu_status' => 'required|int',
-			'yu_times' => 'required|int',
-			'yu_people_list' => 'required',
+			'game_num' => 'required',
 		]);
-		Tools::ensureNotFalse($validator->fails(), ErrorMsg::$paramsErr);
+		Tools::ensureFalse($validator->fails(), ErrorMsg::$paramsErr);
 		//更新game表
 		//状态置为1
 		$gameOrm = Game::where("openid", $request->openid)->where("game_num", $request->game_num)->where("game_status", NormalParams::gameStatusDefault)->first();
@@ -73,7 +67,7 @@ class GameApiController extends ApiController
 		$gameOrm->yu_times = $request->yu_times;
 		$gameOrm->yu_people_list = $request->yu_people_list;
 		$gameOrm->game_status = NormalParams::gameStatusAlready;
-		$gameOrm->save();
+		$upRes = $gameOrm->save();
 		//查看当前是否可以进行运算（4个人的状态都是1）
 		$gameList = Game::where("game_num", $request->game_num)->where("game_status", NormalParams::gameStatusAlready)->get()->keyBy("openid");
 		if(count($gameList) == 4) { //4个人准备好了。开始计算
@@ -114,11 +108,11 @@ class GameApiController extends ApiController
 			foreach ($gameList as &$game) {
 				$game->in_price = isset($finalRes["{$game['openid']}"]["in_price"]) ? $finalRes["{$game['openid']}"]["in_price"] : 0;
 				$game->out_price = isset($finalRes["{$game['openid']}"]["out_price"]) ? $finalRes["{$game['openid']}"]["out_price"] : 0;
-				$game->save();//循环保存
+				$saveRes = $game->save();//循环保存
+				Tools::ensureNotFalse($saveRes, ErrorMsg::$gameReadyCalcuErr);//如果某个失败了。跳错。
 			}
-			Tools::outPut(ErrorMsg::$succ);
-		}else{
-			Tools::outPut(ErrorMsg::$gameCalculateErr);
 		}
+		Tools::ensureNotFalse($upRes, ErrorMsg::$gameReadyCalcuErr);
+		Tools::outPut(ErrorMsg::$succ);
 	}
 }
