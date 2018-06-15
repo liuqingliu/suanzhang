@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Input;
 
 class GameApiController extends ApiController
 {
-	public function getGameInfo(Request $request){
+	public function getGameinfo(Request $request){
 		$this->validate($request, [
 			'openid' => 'required|max:64',
 		]);
