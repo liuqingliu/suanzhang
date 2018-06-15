@@ -15,7 +15,8 @@ use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\DB;
-use NormalParams;
+use App\Http\Common\NormalParams;
+use Validator;
 
 class GameApiController extends ApiController
 {

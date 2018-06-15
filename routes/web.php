@@ -19,4 +19,4 @@ Route::get('/', function () {
 
 Route::get('userapi/getuserinfo', 'Api\UserApiController@getUserinfo');
 Route::get('gameapi/getgameinfo', 'Api\GameApiController@getGameinfo');
-Route::post('gameapi/calculatemoney', 'Api\GameApiController@calculateMoney');
+Route::get('gameapi/calculatemoney', 'Api\GameApiController@calculateMoney');

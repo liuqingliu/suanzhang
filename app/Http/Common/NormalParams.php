@@ -5,6 +5,8 @@
 	 * Date: 2018/6/15
 	 * Time: 16:54
 	 */
+namespace App\Http\Common;
+
 class NormalParams
 {
 	//--------------------------------------game-----------------------------
