@@ -25,7 +25,7 @@ class GameApiController extends ApiController
 			'openid' => 'required|max:64',
 		]);
 
-		Tools::ensureNotFalse($validator->fails(), ErrorMsg::$paramsErr);
+		Tools::ensureFalse($validator->fails(), ErrorMsg::$paramsErr);
 		$openId = $request->openid;
 		//获取game信息
 		$gameInfo = Game::where("openid", $openId)->orderBy('id','desc')->first();
