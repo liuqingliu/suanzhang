@@ -108,6 +108,7 @@ class GameApiController extends ApiController
 			foreach ($gameList as &$game) {
 				$game->in_price = isset($finalRes["{$game['openid']}"]["in_price"]) ? $finalRes["{$game['openid']}"]["in_price"] : 0;
 				$game->out_price = isset($finalRes["{$game['openid']}"]["out_price"]) ? $finalRes["{$game['openid']}"]["out_price"] : 0;
+				$game->game_status = NormalParams::gameStatusCaculateOver;
 				$saveRes = $game->save();//循环保存
 				Tools::ensureNotFalse($saveRes, ErrorMsg::$gameReadyCalcuErr);//如果某个失败了。跳错。
 			}
