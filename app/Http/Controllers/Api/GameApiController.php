@@ -60,12 +60,12 @@ class GameApiController extends ApiController
 		//状态置为1
 		$gameOrm = Game::where("openid", $request->openid)->where("game_num", $request->game_num)->where("game_status", NormalParams::gameStatusDefault)->first();
 		Tools::ensureNotEmpty($gameOrm, ErrorMsg::$gameEmpty);
-		$gameOrm->hu_status = $request->hu_status;
 		$gameOrm->hu_people_list = isset($request->hu_people_list) ? $request->hu_people_list : '';
+		$gameOrm->hu_status = empty($gameOrm->hu_people_list) ? NormalParams::huStatusNot : NormalParams::huStatusYes;
 		$gameOrm->hu_times = $request->hu_times;
-		$gameOrm->yu_status = $request->yu_status;
 		$gameOrm->yu_times = $request->yu_times;
 		$gameOrm->yu_people_list = isset($request->yu_people_list) ? $request->yu_people_list : '';
+		$gameOrm->yu_status = empty($gameOrm->yu_people_list) ? NormalParams::yuStatusNot : NormalParams::yuStatusYes;
 		$gameOrm->game_status = NormalParams::gameStatusAlready;
 		$upRes = $gameOrm->save();
 		//查看当前是否可以进行运算（4个人的状态都是1）
