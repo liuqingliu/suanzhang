@@ -41,8 +41,8 @@ class GameApiController extends ApiController
 		$res = Tools::getMyArr($res, $keys, $gameInfo);
 		//获取当前对局中，对厉害的，最菜的
 		if($gameInfo->game_status>=2){
-			$res["winner"] = Game::select(DB::raw("max(in_price-out_price) as hismoney, openid"))->where('game_num', $gameInfo->game_num)->groupBy("openid")->first();
-			$res["loser"] = Game::select(DB::raw("min(in_price-out_price) as hismoney, openid"))->where('game_num', $gameInfo->game_num)->groupBy("openid")->first();
+			$res["winner"] = Game::select(DB::raw("max(in_price-out_price) as hismoney, openid"))->where('game_num', $gameInfo->game_num)->first();
+			$res["loser"] = Game::select(DB::raw("min(in_price-out_price) as hismoney, openid"))->where('game_num', $gameInfo->game_num)->first();
 		}
 		$succOut = ErrorMsg::$succ;
 		$succOut["data"] = $res;
