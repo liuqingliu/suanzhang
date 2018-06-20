@@ -40,11 +40,19 @@ class GameApiController extends ApiController
 		];
 		$res = Tools::getMyArr($res, $keys, $gameInfo);
 		//获取当前对局中，对厉害的，最菜的
-		if($gameInfo->game_status>=2){
-			$res["winner"] = Game::select(DB::raw("(in_price-out_price) as hismoney, openid"))->where('game_num', $gameInfo->game_num)->orderBy("hismoney","desc")->first();
-			$res["loser"] = Game::select(DB::raw("(in_price-out_price) as hismoney, openid"))->where('game_num', $gameInfo->game_num)->orderBy("hismoney")->first();
+		$gameUserList = Game::select(DB::raw("(in_price-out_price) as hismoney, openid"))->where('game_num', $gameInfo->game_num)->orderBy("hismoney")->get();
+		$otherUserList = [];
+		foreach ($gameUserList as &$gameUser) {
+			if($gameUser->openid != $openId){
+				$otherUserList[] = ["value" => $gameUser->user->nickName, "name" => $gameUser->openid];
+			}
 		}
-
+		if($gameInfo->game_status>=2){
+			$res["winner"] = $gameUserList[3];
+			$res["loser"] = $gameUserList[0];
+		}
+		//查看当前对局有哪几个人
+		$res["other_user_list"] = $otherUserList;
 		$succOut = ErrorMsg::$succ;
 		$succOut["data"] = $res;
 		Tools::outPut($succOut);
@@ -118,6 +126,22 @@ class GameApiController extends ApiController
 		Tools::outPut(ErrorMsg::$succ);
 	}
 
+	public function cancelCalculateMoney(Request $request)
+	{
+		$validator = Validator::make($request->all(), [
+			'openid' => 'required|max:64',
+			'game_num' => 'required',
+		]);
+		Tools::ensureFalse($validator->fails(), ErrorMsg::$paramsErr);
+		$gameInfo = Game::where("openid", $request->openid)->where("game_num",$request->game_num)->first();
+		//判断游戏状态是否有误
+		Tools::ensureNotFalse($gameInfo->game_status==NormalParams::gameStatusAlready, ErrorMsg::$gameCancelForCalculateErr);
+		$gameInfo->game_status = NormalParams::gameStatusDefault;
+		$res = $gameInfo->save();
+		Tools::ensureNotFalse($res, ErrorMsg::$netErr);
+		Tools::outPut(ErrorMsg::$succ);
+	}
+
 	public function readyForNextGame(Request $request)
 	{
 		$validator = Validator::make($request->all(), [
@@ -130,11 +154,26 @@ class GameApiController extends ApiController
 		Tools::ensureNotFalse($gameInfo->game_status==NormalParams::gameStatusCaculateOver, ErrorMsg::$gameReadyForNextErr);
 		$gameInfo->game_status = NormalParams::gameStatusCanNext;
 		$res = $gameInfo->save();
-		Tools::ensureNotFalse($res, ErrorMsg::$gameReadyForNextNetErr);
-		Tools::outPut(ErrorMsg::$succ);
+		Tools::ensureNotFalse($res, ErrorMsg::$netErr);
+		//查看是否全部人都已经准备
+		$gameList = Game::where("game_num",$request->game_num)->where("game_status", NormalParams::gameStatusCanNext)->get();
+		$succ = ErrorMsg::$succ;
+		if(count($gameList->toArray()) == 4){ //4个人都准备好了，那么给他们新开一局
+			foreach ($gameList as $gameOne) {
+				$newGameOne = new Game();
+				$newGameOne->openid = $gameOne->openid;
+				$newGameOne->room_num = $gameOne->room_num;
+				$newGameOne->game_num = $gameOne->game_num+1;
+				$res = $newGameOne->save();
+				//请联系管理员
+				Tools::ensureNotFalse($res, ErrorMsg::$callMe);
+			}
+			$succ["gameInfo"] = Game::where("openid", $request->openid)->where("game_num",$request->game_num + 1)->first();
+		}
+		Tools::outPut($succ);
 	}
 
-	public function CancelForNextGame(Request $request)
+	public function cancelForNextGame(Request $request)
 	{
 		$validator = Validator::make($request->all(), [
 			'openid' => 'required|max:64',
@@ -146,7 +185,7 @@ class GameApiController extends ApiController
 		Tools::ensureNotFalse($gameInfo->game_status==NormalParams::gameStatusCanNext, ErrorMsg::$gameReadyForNextErr);
 		$gameInfo->game_status = NormalParams::gameStatusCaculateOver;
 		$res = $gameInfo->save();
-		Tools::ensureNotFalse($res, ErrorMsg::$gameReadyForNextNetErr);
+		Tools::ensureNotFalse($res, ErrorMsg::$netErr);
 		Tools::outPut(ErrorMsg::$succ);
 	}
 }

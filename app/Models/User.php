@@ -2,20 +2,16 @@
 
 namespace App\Models;
 
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-
-class User extends Authenticatable
+use Illuminate\Database\Eloquent\Model;
+class User extends Model
 {
-    use Notifiable;
-
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
 
-	protected $table = 'games';
+	protected $table = 'users';
 
 	protected $fillable = [
 		'nickName', 'email', 'password', 'open_id', 'gender', 'country', 'province', 'city', 'ip','openid'
@@ -29,4 +25,10 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token', 'created_at', 'updated_at',
     ];
+
+	public function game()
+	{
+		return $this->hasMany(Game::class, 'openid', 'openid');
+		// 第一个参数为关联的模型名字，第二个参数为外键，第三个参数为主键
+	}
 }

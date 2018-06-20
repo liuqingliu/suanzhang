@@ -34,6 +34,7 @@ class UserApiController extends ApiController
 				'country' => $userInfoDetail->country,
 				'avatarUrl' => $userInfoDetail->avatarUrl,
 				'ip' => $request->getClientIp(),
+				'created_at' => date("Y-m-d H:i:s")
 			]);
 		}
 		$res = [

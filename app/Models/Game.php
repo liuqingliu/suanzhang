@@ -30,4 +30,12 @@ class Game extends Model
 	protected $hidden = [
 		'created_at', 'updated_at',
 	];
+
+	/**
+	 * 获取game对应的用户
+	 */
+	public function user()
+	{
+		return $this->belongsTo(User::class, 'openid','openid');
+	}
 }
