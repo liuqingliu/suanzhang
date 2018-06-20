@@ -20,4 +20,7 @@ class ErrorMsg{
 	public static $gameEmpty =  ["errno" => 200,"errmsg" => "游戏信息为空"];
 	public static $gameCalculateErr =  ["errno" => 201,"errmsg" => "游戏计算出错"];
 	public static $gameReadyCalcuErr =  ["errno" => 202,"errmsg" => "游戏计算准备失败"];
+	public static $gameReadyForNextErr =  ["errno" => 203,"errmsg" => "游戏状态有误，无法进行下一场"];
+	public static $gameReadyForNextNetErr =  ["errno" => 204,"errmsg" => "稍等，网络错误"];
+	public static $gameCancelForNextErr =  ["errno" => 205,"errmsg" => "游戏状态有误，无法取消下一场准备"];
 }

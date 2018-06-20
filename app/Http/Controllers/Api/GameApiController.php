@@ -41,9 +41,10 @@ class GameApiController extends ApiController
 		$res = Tools::getMyArr($res, $keys, $gameInfo);
 		//获取当前对局中，对厉害的，最菜的
 		if($gameInfo->game_status>=2){
-			$res["winner"] = Game::select(DB::raw("max(in_price-out_price) as hismoney, openid"))->where('game_num', $gameInfo->game_num)->first();
-			$res["loser"] = Game::select(DB::raw("min(in_price-out_price) as hismoney, openid"))->where('game_num', $gameInfo->game_num)->first();
+			$res["winner"] = Game::select(DB::raw("(in_price-out_price) as hismoney, openid"))->where('game_num', $gameInfo->game_num)->orderBy("hismoney","desc")->first();
+			$res["loser"] = Game::select(DB::raw("(in_price-out_price) as hismoney, openid"))->where('game_num', $gameInfo->game_num)->orderBy("hismoney")->first();
 		}
+
 		$succOut = ErrorMsg::$succ;
 		$succOut["data"] = $res;
 		Tools::outPut($succOut);
@@ -114,6 +115,38 @@ class GameApiController extends ApiController
 			}
 		}
 		Tools::ensureNotFalse($upRes, ErrorMsg::$gameReadyCalcuErr);
+		Tools::outPut(ErrorMsg::$succ);
+	}
+
+	public function readyForNextGame(Request $request)
+	{
+		$validator = Validator::make($request->all(), [
+			'openid' => 'required|max:64',
+			'game_num' => 'required',
+		]);
+		Tools::ensureFalse($validator->fails(), ErrorMsg::$paramsErr);
+		$gameInfo = Game::where("openid", $request->openid)->where("game_num",$request->game_num)->first();
+		//判断游戏状态是否有误
+		Tools::ensureNotFalse($gameInfo->game_status==NormalParams::gameStatusCaculateOver, ErrorMsg::$gameReadyForNextErr);
+		$gameInfo->game_status = NormalParams::gameStatusCanNext;
+		$res = $gameInfo->save();
+		Tools::ensureNotFalse($res, ErrorMsg::$gameReadyForNextNetErr);
+		Tools::outPut(ErrorMsg::$succ);
+	}
+
+	public function CancelForNextGame(Request $request)
+	{
+		$validator = Validator::make($request->all(), [
+			'openid' => 'required|max:64',
+			'game_num' => 'required',
+		]);
+		Tools::ensureFalse($validator->fails(), ErrorMsg::$paramsErr);
+		$gameInfo = Game::where("openid", $request->openid)->where("game_num",$request->game_num)->first();
+		//判断游戏状态是否有误
+		Tools::ensureNotFalse($gameInfo->game_status==NormalParams::gameStatusCanNext, ErrorMsg::$gameReadyForNextErr);
+		$gameInfo->game_status = NormalParams::gameStatusCaculateOver;
+		$res = $gameInfo->save();
+		Tools::ensureNotFalse($res, ErrorMsg::$gameReadyForNextNetErr);
 		Tools::outPut(ErrorMsg::$succ);
 	}
 }

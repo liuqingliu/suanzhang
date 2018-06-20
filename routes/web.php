@@ -19,4 +19,6 @@ Route::get('/', function () {
 
 Route::get('userapi/getuserinfo', 'Api\UserApiController@getUserinfo');
 Route::get('gameapi/getgameinfo', 'Api\GameApiController@getGameinfo');
-Route::get('gameapi/calculatemoney', 'Api\GameApiController@calculateMoney');
+Route::post('gameapi/calculatemoney', 'Api\GameApiController@calculateMoney');
+Route::get('gameapi/readyfornextgame', 'Api\GameApiController@readyForNextGame');
+Route::get('gameapi/cancelfornextgame', 'Api\GameApiController@cancelForNextGame');
