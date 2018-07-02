@@ -22,4 +22,5 @@
 	Route::post('/cancelfornextgame', 'Api\GameApiController@cancelForNextGame');
 	Route::get('/getuserinfo', 'Api\UserApiController@getUserinfo');
 	Route::get('/getgameinfo', 'Api\GameApiController@getGameinfo');
+    Route::post('/creategameroom', 'Api\GameApiController@createGameRoom');
 	Route::post('/cancelcalculatemoney', 'Api\GameApiController@cancelCalculateMoney');

@@ -11,6 +11,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Common\ErrorMsg;
 use App\Http\Common\Tools;
 use App\Models\Game;
+use App\Models\Room;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
@@ -20,6 +21,9 @@ use Validator;
 
 class GameApiController extends ApiController
 {
+    //1.校验当前这个人是否在房间里,并且这个房间是处于活动状态
+    //如果处于活动状态（status!=4）,则会显示用户基本信息+当前房间的总对局情况,并展示计算按钮;
+    //如果不处于活动状态,status=4，则会显示用户基本信息，并且展示创建房间的按钮;
 	public function getGameinfo(Request $request){
 		$validator = Validator::make($request->all(), [
 			'openid' => 'required|max:64',
@@ -197,4 +201,37 @@ class GameApiController extends ApiController
 		Tools::ensureNotFalse($res, ErrorMsg::$netErr);
 		Tools::outPut(ErrorMsg::$succ);
 	}
+
+	//创建游戏房间
+    //等待其他人加入
+	public function createGameRoom(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'openid' => 'required|max:64',
+            'name' => 'required|max:16',
+            'price' => 'required|min:1',
+        ]);
+        Tools::ensureFalse($validator->fails(), ErrorMsg::$paramsErr);
+        //判断当前这个人是否可以创建新房间
+        $openId = $request->openid;
+        $gameInfo = Game::where("openid", $openId)->orderBy('id','desc')->first();
+//        Tools::ensureNotFalse(empty($gameInfo) || $gameInfo["game_status"]==NormalParams::gameStatusAbandon,
+//            ErrorMsg::$paramsErr);//必须是空的或者处于无对局状态的情况
+        //创建room
+        $insertParams = $request->all();
+        $res = DB::transaction(function ()  use ($insertParams, $gameInfo){
+            $id = DB::table('rooms')->insert([
+                "name" => $insertParams["name"],
+                "price" => $insertParams["price"],
+                "created_at" => date("Y-m-d H:i:s"),
+            ]);
+            DB::table('games')->insert([
+                "openid" => $insertParams["openid"],
+                "room_num" => $id,
+                "game_num" => isset($gameInfo) ? $gameInfo["game_num"]+1 : 1,
+                "created_at" => date("Y-m-d H:i:s"),
+            ]);
+        });
+        Tools::ensureEmpty($res, ErrorMsg::$gameRoomCreateFail);
+    }
 }

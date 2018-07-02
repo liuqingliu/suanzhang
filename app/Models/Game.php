@@ -38,4 +38,12 @@ class Game extends Model
 	{
 		return $this->belongsTo(User::class, 'openid','openid');
 	}
+
+    /**
+     * 获取game对应的room
+     */
+    public function room()
+    {
+        return $this->belongsTo(Room::class, 'room_num','id');
+    }
 }

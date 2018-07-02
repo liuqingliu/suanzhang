@@ -21,5 +21,5 @@ class NormalParams
 	const gameStatusAlready = 1;//已经准备好了
 	const gameStatusCaculateOver = 2;//计算完成
 	const gameStatusCanNext = 3;//准备下一局
-	const gameStatusFail = 4;//失败（一般不会有）
+	const gameStatusAbandon = 4;//作废
 }

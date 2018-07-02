@@ -25,4 +25,6 @@ class ErrorMsg{
 	public static $gameReadyForNextErr =  ["errno" => 203,"errmsg" => "游戏状态有误，无法进行下一场"];
 	public static $gameCancelForNextErr =  ["errno" => 204,"errmsg" => "游戏状态有误，无法取消下一场准备"];
 	public static $gameCancelForCalculateErr =  ["errno" => 205,"errmsg" => "游戏状态有误，无法取消计算准备"];
+    public static $gameRoomCreateFail =  ["errno" => 206,"errmsg" => "游戏房间创建失败"];
+
 }
