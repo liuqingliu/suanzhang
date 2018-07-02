@@ -14,7 +14,7 @@ class User extends Model
 	protected $table = 'users';
 
 	protected $fillable = [
-		'nickName', 'email', 'password', 'open_id', 'gender', 'country', 'province', 'city', 'ip','openid'
+		'nickName', 'email', 'password', 'open_id', 'gender', 'country', 'province', 'city', 'ip','openid','avatarUrl'
 	];
 
     /**

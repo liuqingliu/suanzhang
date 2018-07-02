@@ -31,6 +31,8 @@ class GameApiController extends ApiController
 		$gameInfo = Game::where("openid", $openId)->orderBy('id','desc')->first();
 		Tools::ensureNotEmpty($gameInfo, ErrorMsg::$gameEmpty);
 		$res = [
+			"yu_times" => $gameInfo->yu_times,
+			"hu_times" => $gameInfo->hu_times,
 			"in_total_price" => Game::where("openid", $openId)->sum("in_price"),
 			"out_total_price" => Game::where("openid", $openId)->sum("out_price"),
 		];
@@ -41,18 +43,25 @@ class GameApiController extends ApiController
 		$res = Tools::getMyArr($res, $keys, $gameInfo);
 		//获取当前对局中，对厉害的，最菜的
 		$gameUserList = Game::select(DB::raw("(in_price-out_price) as hismoney, openid"))->where('game_num', $gameInfo->game_num)->orderBy("hismoney")->get();
-		$otherUserList = [];
-		foreach ($gameUserList as &$gameUser) {
+		$otherUserHuList = [];
+		$otherUserYuList = [];
+		$yuList = explode(",", $gameInfo->yu_people_list);
+		$huList = explode(",", $gameInfo->hu_people_list);
+
+		foreach ($gameUserList as $gameUser) {
 			if($gameUser->openid != $openId){
-				$otherUserList[] = ["value" => $gameUser->user->nickName, "name" => $gameUser->openid];
+				$otherUserHuList[] = ["value" => $gameUser->user->nickName, "name" => $gameUser->openid, "checks" => in_array($gameUser->openid, $huList) ? true :false];
+				$otherUserYuList[] = ["value" => $gameUser->user->nickName, "name" => $gameUser->openid, "checks" => in_array($gameUser->openid, $yuList) ? true :false];
 			}
 		}
+
 		if($gameInfo->game_status>=2){
 			$res["winner"] = $gameUserList[3];
 			$res["loser"] = $gameUserList[0];
 		}
 		//查看当前对局有哪几个人
-		$res["other_user_list"] = $otherUserList;
+		$res["other_user_hu_list"] = $otherUserHuList;
+		$res["other_user_yu_list"] = $otherUserYuList;
 		$succOut = ErrorMsg::$succ;
 		$succOut["data"] = $res;
 		Tools::outPut($succOut);
